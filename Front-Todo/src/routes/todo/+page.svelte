@@ -5,8 +5,10 @@
   import { fr } from "date-fns/locale";
   import { darkMode } from "$lib/store";
 
+  let loading = true; // Définir la variable de chargement à true par défaut
   //instanciation de la variable todos qui va recevoiir le liste des todos depuis le back
   export let todos = [];
+  let notodo = false;
 
   /**
    * fonction qui formatte une date d'entrée pour avoir en sortie
@@ -31,14 +33,25 @@
    * fonction de récupération de l'ensemble des todo à partir de notre api
    */
   let promise = async function fetchTodos() {
+    console.log(loading);
+    loading = true; // Définir le chargement à true pendant la récupération
     try {
       const response = await fetch("https://localhost:3000/todos");
+      if (!response.ok) {
+        console.log("erreur");
+        throw new Error("La requête a échoué : " + response.status);
+      }
       const data = await response.json();
       todos = data;
     } catch (error) {
       console.error("Erreur lors de la récupération des todos :", error);
+    } finally {
+      console.log(loading);
+      loading = false; // Mettre à jour le chargement une fois que les données sont récupérées
     }
   };
+
+  promise();
 
   /**
    * fonction qui permet de supprimer une todo en fonction de son id depuis notre api
@@ -117,8 +130,13 @@
     try {
       // Call the deleteTodoById function to delete the todo with the given ID
       await deleteTodoById(todoId);
+
       // After deletion, you can fetch the updated list of todos
       promise();
+      if (todos.length === 1) {
+        console.log("je raffraichis la page")
+        location.reload();
+      }
     } catch (error) {
       // Handle any errors that may occur during the deletion
       console.error("Error while deleting todo:", error);
@@ -134,9 +152,6 @@
     goto(`/todo/detail/${todo.Id}`);
   }
 
-  beforeUpdate(() => {
-    promise();
-  });
   onMount(() => {
     promise();
   });
@@ -160,50 +175,47 @@
     .sort((a, b) => new Date(a.LimitDate) - new Date(b.LimitDate));
 </script>
 
-  <div class="title"><h1>Mes todos</h1></div>
+<div class="title"><h1>Mes todos</h1></div>
 
-  <!-- Add the filter input field -->
-  <div class="formgroup">
-    <div class="label">
-      <label for="filter-input">Filter:</label>
-    </div>
-    <div>
-      <input
-        id="filter-input"
-        data-testid="filter"
-        bind:value={filter}
-        class="input-field"
-        placeholder="Filter by name, description, or limit date"
-      />
-    </div>
+<!-- Add the filter input field -->
+<div class="formgroup">
+  <div class="label">
+    <label for="filter-input">Filter:</label>
   </div>
+  <div>
+    <input
+      id="filter-input"
+      data-testid="filter"
+      bind:value={filter}
+      class="input-field"
+      placeholder="Filter by name, description, or limit date"
+    />
+  </div>
+</div>
 
-  {#if todos.length > 0}
-    <div class="todo-list">
-      {#each filteredTodos as todo}
-        <div
-          class="todo-card"
-          class:isdone={todo.IsDone}
-          class:notdone={!todo.IsDone && isLimitDateExpired(todo.LimitDate)}
-        >
-          <h2 class="todo-title">{todo.Name}</h2>
-          <p>{todo.Description}</p>
-          <p>à faire avant le {formattedDate(todo.LimitDate)}</p>
-          {#if todo.IsDone}<button on:click={() => handleUpdate(todo)}
-              >Undone</button
-            >{:else}<button on:click={() => handleUpdate(todo)}>Done</button
-            >{/if}
-          <button on:click={() => handleDetailClick(todo)}
-            >Voir le détail</button
-          >
-          <button on:click={() => handleDelete(todo.Id)}>Delete</button>
-        </div>
-      {/each}
-    </div>
-  {:else}
-    <p>Chargement en cours</p>
-  {/if}
-
+{#if loading}
+  <p>Chargement des todos...</p>
+{:else if todos.length > 0}
+  <div class="todo-list">
+    {#each filteredTodos as todo}
+      <div
+        class="todo-card"
+        class:isdone={todo.IsDone}
+        class:notdone={!todo.IsDone && isLimitDateExpired(todo.LimitDate)}
+      >
+        <h2 class="todo-title">{todo.Name}</h2>
+        <p>{todo.Description}</p>
+        <p>à faire avant le {formattedDate(todo.LimitDate)}</p>
+        {#if todo.IsDone}<button on:click={() => handleUpdate(todo)}
+            >Undone</button
+          >{:else}<button on:click={() => handleUpdate(todo)}>Done</button>{/if}
+        <button on:click={() => handleDetailClick(todo)}>Voir le détail</button>
+        <button on:click={() => handleDelete(todo.Id)}>Delete</button>
+      </div>
+    {/each}
+  </div>{:else}
+  <p>Aucune todo</p>
+{/if}
 
 <style>
   .title {
