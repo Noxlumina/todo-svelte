@@ -1,0 +1,8 @@
+{
+	"/": [],
+	"/addTodo": [],
+	"/todo": [],
+	"/todo/detail/[id]": [
+		"src/routes/todo/detail/[id]/+page.js"
+	]
+}

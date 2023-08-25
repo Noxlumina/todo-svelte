@@ -1,0 +1,25 @@
+# Fichiers spécifiques à Angular
+/node_modules
+/dist
+/build
+/.svetle-kit
+
+# Fichiers générés par VS Code
+.vscode
+/.vscode
+/.vscode-remote
+
+# Fichiers de configuration utilisateur VS Code
+/User
+/User/settings.json
+
+# Autres fichiers et dossiers à ignorer
+.git
+.gitignore
+.dockerignore
+.env
+.env.example
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.DS_Store
