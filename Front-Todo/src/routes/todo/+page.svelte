@@ -7,7 +7,6 @@
 
   let loading = true; // Définir la variable de chargement à true par défaut
   //instanciation de la variable todos qui va recevoiir le liste des todos depuis le back
-  export let todos = [];
   let notodo = false;
 
   /**
@@ -32,7 +31,7 @@
   /**
    * fonction de récupération de l'ensemble des todo à partir de notre api
    */
-  let promise = async function fetchTodos() {
+  async function fetchTodos() {
     console.log(loading);
     loading = true; // Définir le chargement à true pendant la récupération
     try {
@@ -42,16 +41,22 @@
         throw new Error("La requête a échoué : " + response.status);
       }
       const data = await response.json();
-      todos = data;
+      return data;
     } catch (error) {
       console.error("Erreur lors de la récupération des todos :", error);
+      return []; // Retourner un tableau vide en cas d'erreur
     } finally {
       console.log(loading);
       loading = false; // Mettre à jour le chargement une fois que les données sont récupérées
     }
   };
 
-  promise();
+  let todos = [];
+  async function loadData() {
+    todos = await fetchTodos();
+  }
+
+  loadData();
 
   /**
    * fonction qui permet de supprimer une todo en fonction de son id depuis notre api
@@ -116,7 +121,7 @@
       await updateTodoById(todo.Id, updatedTodoData);
 
       //actualisation de la liste des todos avec les dernières données à jours
-      promise();
+      loadData();
     } catch (error) {
       console.error("Error while updating todo:", error);
     }
@@ -132,11 +137,7 @@
       await deleteTodoById(todoId);
 
       // After deletion, you can fetch the updated list of todos
-      promise();
-      if (todos.length === 1) {
-        console.log("je raffraichis la page")
-        location.reload();
-      }
+      loadData();
     } catch (error) {
       // Handle any errors that may occur during the deletion
       console.error("Error while deleting todo:", error);
@@ -153,7 +154,7 @@
   }
 
   onMount(() => {
-    promise();
+    loadData();
   });
 
   // varible reactive pour la valeur du filtre
