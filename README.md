@@ -29,7 +29,8 @@ Installer MongoDb depuis le lien plus haut
 ou depuis le docker-compose.yaml avec la cmd :
 
 ```bash
-docker-compose up```
+docker-compose up
+```
 
 4. Lancer le backend
 
