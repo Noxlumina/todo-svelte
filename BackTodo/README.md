@@ -17,7 +17,7 @@ git clone https://github.com/Noxlumina/todo-svelte.git
 2. Accédez au répertoire du projet :
 
 ```bash
-cd BackTodo
+cd todo-svelte/BackTodo
 ```
 
 3. Exécutez l'application en utilisant la commande suivante :
