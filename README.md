@@ -20,8 +20,7 @@ git clone https://github.com/Noxlumina/todo-svelte.git
 2. Accédez au répertoire du projet :
 
 ```bash
-cd NomDuProjet
-```
+cd todo-svelte```
 
 3. Lancer la base de donnée
 
@@ -42,7 +41,7 @@ dotnet run
 
 ```bash
 cd ..
-cd frontend
+cd Front-Todo
 npm install
 npm run dev
 ```
