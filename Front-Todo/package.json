@@ -24,7 +24,7 @@
   "type": "module",
   "dependencies": {
     "date-fns": "^2.30.0",
-    "firebase": "^10.2.0",
+    "firebase": "^10.3.0",
     "image-type": "^5.2.0"
   },
   "description": "Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).",
