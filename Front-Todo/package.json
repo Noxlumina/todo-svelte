@@ -23,7 +23,7 @@
   },
   "type": "module",
   "dependencies": {
-    "date-fns": "^2.30.0",
+    "date-fns": "^3.0.0",
     "firebase": "^10.2.0",
     "image-type": "^5.2.0"
   },
